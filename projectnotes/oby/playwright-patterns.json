@@ -1,0 +1,92 @@
+{
+  "project_type": "visual-regression-tool",
+  "engine": "playwright",
+  "created": "2025-08-20T11:55:00",
+  "last_updated": "2025-08-20T11:55:00",
+  "browser_patterns": {
+    "supported_browsers": ["chromium", "firefox", "webkit", "edge"],
+    "default_browser": "chromium",
+    "cross_browser_command": "crossbrowser",
+    "browser_launch": "getBrowser() method with type parameter"
+  },
+  "mobile_patterns": {
+    "device_presets": {
+      "iPhone": ["14 Pro", "14 Pro Max", "13", "SE"],
+      "iPad": ["Pro", "Mini"],
+      "Android": ["Pixel 7", "Galaxy S22", "Galaxy Tab S8"]
+    },
+    "emulation_method": "browser.newContext() with device profile",
+    "mobile_command": "mobile"
+  },
+  "interaction_patterns": {
+    "supported_types": [
+      "click", "type", "hover", "drag", "select",
+      "check", "uncheck", "press", "scroll",
+      "wait", "evaluate", "screenshot"
+    ],
+    "interaction_format": "JSON array of action objects",
+    "api_methods": {
+      "navigation": ["goBack", "goForward", "reload", "getUrl"],
+      "interaction": ["click", "type", "hover", "selectOption"],
+      "content": ["screenshot", "getContent", "evaluate", "extractData"],
+      "ai_specific": ["findElements", "getAccessibilityTree", "waitForSelector"]
+    }
+  },
+  "testing_patterns": {
+    "engine_selection": "--engine playwright|puppeteer",
+    "default_engine": "playwright",
+    "wait_conditions": ["domcontentloaded", "networkidle", "load"],
+    "default_wait": "domcontentloaded",
+    "retry_strategy": "exponential backoff with max 10s",
+    "cleanup_pattern": "always use finally blocks for browser.close()"
+  },
+  "command_patterns": {
+    "new_commands": {
+      "crossbrowser": "Test on all browsers simultaneously",
+      "mobile": "Test on mobile devices",
+      "interact": "Interactive session with AI API"
+    },
+    "npm_scripts": {
+      "crossbrowser": "node cli.js crossbrowser",
+      "mobile": "node cli.js mobile",
+      "interact": "node cli.js interact",
+      "test:playwright": "node tests/test-playwright-features.js",
+      "playwright:install": "npx playwright install"
+    }
+  },
+  "file_organization": {
+    "playwright_implementation": "lib/playwright-vrt.js",
+    "puppeteer_implementation": "lib/vrt.js",
+    "test_file": "tests/test-playwright-features.js",
+    "documentation": "PLAYWRIGHT-VRT-GUIDE.md",
+    "cli_entry": "cli.js with engine selection"
+  },
+  "api_patterns": {
+    "class_name": "PlaywrightVRT",
+    "extends": "EventEmitter",
+    "key_methods": [
+      "capture(url, options)",
+      "interactiveSession(url, options)",
+      "compare(before, after, options)",
+      "performInteractions(page, interactions)",
+      "cleanupBrowser(browser)"
+    ],
+    "error_handling": "withRetry wrapper for all operations",
+    "browser_tracking": "activeBrowsers Set for cleanup"
+  },
+  "configuration_patterns": {
+    "viewport_defaults": [
+      {"name": "mobile", "width": 375, "height": 812, "deviceScaleFactor": 2},
+      {"name": "tablet", "width": 768, "height": 1024, "deviceScaleFactor": 2},
+      {"name": "desktop", "width": 1440, "height": 900, "deviceScaleFactor": 1},
+      {"name": "desktop-xl", "width": 1920, "height": 1080, "deviceScaleFactor": 1}
+    ],
+    "options_structure": {
+      "browser": "string (chromium|firefox|webkit|all)",
+      "headless": "boolean (default true)",
+      "slowMo": "number (milliseconds)",
+      "recordVideo": "boolean",
+      "tracing": "boolean"
+    }
+  }
+}

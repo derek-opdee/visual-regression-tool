@@ -1,0 +1,36 @@
+{
+  "project_type": "visual-regression-tool",
+  "created": "2025-08-19T11:53:00",
+  "quality_standards": {
+    "no_hardcoded_paths": {
+      "pattern": "Use browser-detector.js for all browser paths",
+      "violations_fixed": ["Removed hardcoded Edge path from vrt.js"],
+      "enforcement": "All browser paths must use getBrowserPath()"
+    },
+    "memory_management": {
+      "pattern": "Always use finally blocks for browser.close()",
+      "implementation": "withRetry wrapper ensures cleanup",
+      "enforcement": "No browser launch without corresponding close"
+    },
+    "error_handling": {
+      "pattern": "Try/catch around module initialization",
+      "implementation": "Graceful fallbacks for all requires",
+      "user_feedback": "Clear error messages with chalk colors"
+    },
+    "console_usage": {
+      "allowed": "User feedback and progress indicators only",
+      "forbidden": "Debug statements, raw console.log",
+      "implementation": "Use ora spinners and chalk for output"
+    }
+  },
+  "file_organization": {
+    "active_files": ["cli.js", "lib/*.js", "test-basic.js"],
+    "archived_files": "old-scripts/ directory for deprecated code",
+    "pattern": "Single CLI entry point with modular lib components"
+  },
+  "testing_standards": {
+    "quick_test": "npm run test:quick for basic functionality",
+    "local_test": "npm run test:hattch for full capture test",
+    "comparison_test": "Compare multiple captures for regression"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "project_type": "visual-regression-tool",
+  "last_updated": "2025-08-19T11:53:00",
+  "review_completed": "2025-08-19T11:53:00",
+  "browser_handling": {
+    "detection_pattern": "getBrowserPath",
+    "options_pattern": "getBrowserOptions",
+    "launch_pattern": "puppeteerExtra.launch with cross-platform detection",
+    "cleanup_pattern": "browser.close() in finally blocks"
+  },
+  "error_handling": {
+    "initialization": "try/catch for module requires with graceful fallback",
+    "browser_launch": "withRetry wrapper for resilient operations",
+    "user_feedback": "chalk colored messages with spinner states"
+  },
+  "module_patterns": {
+    "esm_compatibility": "Dynamic imports with fallback for ESM modules",
+    "browser_detector": "Centralized browser path detection",
+    "async_operations": "Promise-based delays instead of deprecated methods"
+  },
+  "cli_patterns": {
+    "command_structure": "commander.js with action handlers",
+    "error_exits": "process.exit(1) with clear error messages",
+    "spinner_usage": "ora for progress indication"
+  },
+  "file_organization": {
+    "lib_directory": "Core functionality in lib/",
+    "old_scripts": "Deprecated scripts moved to old-scripts/",
+    "test_files": "Keep essential test files in root"
+  }
+}

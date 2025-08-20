@@ -1,0 +1,215 @@
+#!/usr/bin/env node
+const { program } = require('commander');
+const chalk = require('chalk').default || require('chalk');
+// const inquirer = require('inquirer');
+const ora = require('ora');
+const path = require('path');
+
+// Import command handlers
+const captureCommand = require('./commands/capture');
+const compareCommand = require('./commands/compare');
+const analyzeCommand = require('./commands/analyze');
+const debugCommand = require('./commands/debug');
+const monitorCommand = require('./commands/monitor');
+const baselineCommand = require('./commands/baseline');
+const interactiveCommand = require('./commands/interactive');
+
+// Version and description
+program
+  .version('2.0.0')
+  .description(chalk.cyan('Visual Regression Tool - AI-powered visual testing and analysis'));
+
+// Capture command
+program
+  .command('capture')
+  .description('Capture screenshots with AI analysis')
+  .option('-u, --url <url>', 'Base URL to test', 'http://localhost:8000')
+  .option('-v, --viewports <viewports>', 'Comma-separated viewports (mobile,tablet,desktop)', 'mobile,tablet,desktop')
+  .option('-p, --pages <pages>', 'Specific pages to capture (comma-separated)')
+  .option('-o, --output <dir>', 'Output directory name')
+  .option('-f, --full-page', 'Capture full page screenshots')
+  .option('-c, --components', 'Capture individual components')
+  .option('-a, --analyze', 'Enable AI visual analysis')
+  .option('--timeline', 'Capture visual timeline during page load')
+  .action(captureCommand);
+
+// Compare command
+program
+  .command('compare <before> <after>')
+  .description('Compare screenshots with AI-powered analysis')
+  .option('-t, --threshold <number>', 'Difference threshold (0-1)', '0.1')
+  .option('-o, --output <dir>', 'Output directory for diff reports')
+  .option('-h, --highlight-color <color>', 'Color for highlighting differences', 'red')
+  .option('-r, --generate-report', 'Generate HTML comparison report')
+  .option('-a, --ai-analysis', 'Enable AI-powered difference analysis')
+  .option('--suggest-fixes', 'Get AI suggestions for CSS fixes')
+  .action(compareCommand);
+
+// Analyze command (AI-powered)
+program
+  .command('analyze <target>')
+  .description('AI-powered visual analysis and recommendations')
+  .option('-t, --type <type>', 'Analysis type (design,accessibility,performance,all)', 'all')
+  .option('-f, --format <format>', 'Output format (json,html,markdown)', 'html')
+  .option('--detect-issues', 'Detect visual issues (misalignment, color problems, broken layouts)')
+  .option('--suggest-improvements', 'Get design improvement suggestions')
+  .option('--check-consistency', 'Check design system consistency')
+  .action(analyzeCommand);
+
+// Debug command
+program
+  .command('debug <url>')
+  .description('Advanced debugging with visual timeline and analysis')
+  .option('-c, --console', 'Capture console logs')
+  .option('-n, --network', 'Monitor network requests')
+  .option('-p, --performance', 'Capture performance metrics')
+  .option('--coverage', 'Generate code coverage report')
+  .option('--trace', 'Create Chrome trace file')
+  .option('-s, --slowmo <ms>', 'Slow down actions by specified milliseconds')
+  .option('--timeline', 'Capture visual timeline at intervals')
+  .option('--element-inspector', 'Enable element inspection mode')
+  .option('--accessibility', 'Run accessibility checks with axe-core')
+  .action(debugCommand);
+
+// Monitor command
+program
+  .command('monitor <url>')
+  .description('Continuously monitor for visual changes with AI alerts')
+  .option('-i, --interval <seconds>', 'Check interval in seconds', '300')
+  .option('-n, --notify', 'Send notifications on changes')
+  .option('-t, --threshold <number>', 'Change threshold to trigger alert', '0.1')
+  .option('--ai-alerts', 'Enable AI-powered alert classification')
+  .option('--auto-baseline', 'Automatically update baseline for minor changes')
+  .action(monitorCommand);
+
+// Baseline management command
+program
+  .command('baseline <action>')
+  .description('Smart baseline management (update, branch, rollback, auto-select)')
+  .option('-b, --backup', 'Backup existing baseline before updating')
+  .option('-s, --selective', 'Choose which screenshots to update')
+  .option('-f, --force', 'Force update without confirmation')
+  .option('--branch <name>', 'Create baseline branch')
+  .option('--auto-select', 'AI-powered baseline selection')
+  .option('--version <version>', 'Baseline version management')
+  .action(baselineCommand);
+
+// Interactive mode
+program
+  .command('interactive')
+  .alias('i')
+  .description('Interactive mode for guided testing workflows')
+  .action(interactiveCommand);
+
+// Update command
+program
+  .command('update')
+  .description('Update baseline screenshots with smart management')
+  .option('-b, --backup', 'Backup existing baseline before updating')
+  .option('-s, --selective', 'Choose which screenshots to update')
+  .option('-f, --force', 'Force update without confirmation')
+  .action((options) => baselineCommand('update', options));
+
+// Batch command
+program
+  .command('batch <config-file>')
+  .description('Run multiple tests in parallel')
+  .option('-p, --parallel <number>', 'Number of parallel instances', '4')
+  .option('--incremental', 'Only test changed files')
+  .action(require('./commands/batch'));
+
+// AI command group
+const ai = program
+  .command('ai')
+  .description('AI-powered visual analysis commands');
+
+ai
+  .command('detect-issues <url>')
+  .description('Detect visual issues using AI')
+  .option('-t, --types <types>', 'Issue types to detect (layout,color,typography,spacing)', 'all')
+  .action(require('./commands/ai/detect-issues'));
+
+ai
+  .command('suggest-fixes <comparison-dir>')
+  .description('Get CSS fix suggestions for detected issues')
+  .action(require('./commands/ai/suggest-fixes'));
+
+ai
+  .command('design-review <url>')
+  .description('AI-powered design review and recommendations')
+  .action(require('./commands/ai/design-review'));
+
+// Test command group
+const test = program
+  .command('test')
+  .description('Specialized testing commands');
+
+test
+  .command('components <url>')
+  .description('Test individual UI components in isolation')
+  .option('--config <file>', 'Component test configuration')
+  .action(require('./commands/test/components'));
+
+test
+  .command('responsive <url>')
+  .description('Test responsive behavior across breakpoints')
+  .option('--breakpoints <points>', 'Comma-separated breakpoints', '320,768,1024,1440')
+  .action(require('./commands/test/responsive'));
+
+test
+  .command('interactions <url>')
+  .description('Test interactive elements (hover, click, focus)')
+  .option('--elements <selectors>', 'Elements to test', 'button,a,.interactive')
+  .action(require('./commands/test/interactions'));
+
+test
+  .command('accessibility <url>')
+  .description('Run comprehensive accessibility tests')
+  .option('--standard <standard>', 'Accessibility standard (WCAG2A,WCAG2AA,WCAG2AAA)', 'WCAG2AA')
+  .action(require('./commands/test/accessibility'));
+
+// Migration command group
+const migrate = program
+  .command('migrate')
+  .description('CSS framework migration helpers');
+
+migrate
+  .command('prepare')
+  .description('Prepare for migration by capturing baseline')
+  .option('--framework <name>', 'Current framework', 'bootstrap')
+  .option('--output <dir>', 'Output directory')
+  .action(require('./commands/migrate/prepare'));
+
+migrate
+  .command('validate')
+  .description('Validate migrated components against baseline')
+  .option('--baseline <dir>', 'Baseline directory')
+  .option('--current <dir>', 'Current state directory')
+  .action(require('./commands/migrate/validate'));
+
+migrate
+  .command('report')
+  .description('Generate detailed migration validation report')
+  .option('--format <format>', 'Report format', 'html')
+  .action(require('./commands/migrate/report'));
+
+// Global error handling
+program.on('command:*', () => {
+  console.error(chalk.red('Invalid command: %s'), program.args.join(' '));
+  console.log('See --help for a list of available commands.');
+  process.exit(1);
+});
+
+// Show ASCII art logo
+if (process.argv.length === 2) {
+  console.log(chalk.cyan(`
+╦  ╦╦╔═╗╦ ╦╔═╗╦    ╦═╗╔═╗╔═╗╦═╗╔═╗╔═╗╔═╗╦╔═╗╔╗╔
+╚╗╔╝║╚═╗║ ║╠═╣║    ╠╦╝║╣ ║ ╦╠╦╝║╣ ╚═╗╚═╗║║ ║║║║
+ ╚╝ ╩╚═╝╚═╝╩ ╩╩═╝  ╩╚═╚═╝╚═╝╩╚═╚═╝╚═╝╚═╝╩╚═╝╝╚╝
+                AI-Powered Visual Testing Tool v2.0
+  `));
+  program.help();
+}
+
+// Parse arguments
+program.parse(process.argv);

@@ -1,0 +1,48 @@
+{
+  "name": "visual-regression-tool",
+  "version": "3.0.0",
+  "description": "Cross-browser visual regression testing with Playwright & AI analysis",
+  "main": "capture-hattch-baseline.js",
+  "scripts": {
+    "vrt": "node cli.js",
+    "capture": "node cli.js capture",
+    "compare": "node cli.js compare",
+    "baseline": "node cli.js baseline",
+    "debug": "node cli.js debug",
+    "monitor": "node cli.js monitor",
+    "test:local": "node cli.js capture -u http://localhost:3000 --full-page --analyze",
+    "test:hattch": "node cli.js capture -u http://directory.hattch-localhost --full-page --analyze",
+    "test:quick": "node test-basic.js",
+    "test:playwright": "node tests/test-playwright-features.js",
+    "crossbrowser": "node cli.js crossbrowser",
+    "mobile": "node cli.js mobile",
+    "interact": "node cli.js interact",
+    "playwright:install": "npx playwright install",
+    "help": "node cli.js --help"
+  },
+  "bin": {
+    "visual-regression-tool": "./cli.js",
+    "vrt": "./cli.js"
+  },
+  "dependencies": {
+    "@axe-core/puppeteer": "^4.10.2",
+    "@playwright/test": "^1.55.0",
+    "axe-core": "^4.10.3",
+    "axios": "^1.11.0",
+    "chalk": "^5.6.0",
+    "commander": "^14.0.0",
+    "dotenv": "^17.2.1",
+    "inquirer": "^12.9.3",
+    "jimp": "^1.6.0",
+    "ora": "^8.2.0",
+    "pixelmatch": "^7.1.0",
+    "playwright": "^1.55.0",
+    "pngjs": "^7.0.0",
+    "puppeteer": "^24.16.2",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "resemblejs": "^5.0.0",
+    "sharp": "^0.34.3",
+    "util-deprecate": "^1.0.2"
+  }
+}
